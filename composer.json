@@ -1,0 +1,15 @@
+{
+    "name": "fabio/php-arrays-validations",
+    "autoload": {
+        "psr-4": {
+            "src\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "fabio-c266",
+            "email": "fabiocaldas266@gmail.com"
+        }
+    ],
+    "require": {}
+}
