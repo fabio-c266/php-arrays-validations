@@ -6,13 +6,13 @@ use Exception;
 
 class Schema
 {
-    protected static array $errors = [];
-    private static array $dataValidated = [];
-    public const AVALIABLE_TYPES = [
+    private array $errors = [];
+    private array $dataValidated = [];
+    private array $avaliablesTypes = [
         "string"
     ];
 
-    public static function validate(array $schema, array $data)
+    public function validate(array $schema, array $data)
     {
         foreach ($schema as $schemaKey => $schemaValidationsMethods) {
             if (gettype($schemaValidationsMethods) !== 'array') {
@@ -25,7 +25,7 @@ class Schema
             $validationType = $schemaValidationsMethods[0] ?? null;
             $valueOptinalOrRequired = $schemaValidationsMethods[1] ?? null;
 
-            if (!in_array($validationType, self::AVALIABLE_TYPES)) {
+            if (!in_array($validationType, $this->avaliablesTypes)) {
                 throw new Exception("Is need use first the data type in {$schemaKey}.");
             }
 
@@ -59,11 +59,11 @@ class Schema
                         call_user_func_array([$classInstance, $method], []);
                     }
 
-                    if (!array_key_exists($schemaKey, self::$dataValidated)) {
-                        self::$dataValidated[$schemaKey] = $classInstance->getData();
+                    if (!array_key_exists($schemaKey, $this->dataValidated)) {
+                        $this->dataValidated[$schemaKey] = $classInstance->getData();
                     }
                 } catch (Exception $except) {
-                    self::$errors[] = "{$schemaKey}: {$except->getMessage()}";
+                    $this->errors[] = "{$schemaKey}: {$except->getMessage()}";
                     break;
                 } finally {
                     $index++;
@@ -71,10 +71,10 @@ class Schema
             }
         }
 
-        if (count(self::$errors) > 0) {
-            throw new Exception(self::$errors[0]);
+        if (count($this->errors) > 0) {
+            throw new Exception($this->errors[0]);
         }
 
-        return self::$dataValidated;
+        return $this->dataValidated;
     }
 }
